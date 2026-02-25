@@ -51,14 +51,14 @@ function initTyping() {
     if (!el) return;
 
     const phrases = [
-        'The One Piece... is clean code.',
-        'Hello, friend.',
-        '... a',
-        'Junior Software Developer.',
-        'Web & Mobile Builder.',
-        'Clean Code Advocate.',
-        'Problem Solver.',
-    ];
+    'The One Piece... is clean code.',
+    'Hello, friend.',
+    'You’ve been searching for something...',
+    'A Junior Software Developer.',
+    'A Web & Mobile Builder.',
+    'A Clean Code Advocate.',
+    'A Problem Solver.',
+];
 
     let phraseIndex = 0;
     let charIndex = 0;
