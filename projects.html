@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="images/ag.jpg">
+    <title>Projects | Azola Gatya</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="projects-page">
+
+<nav>
+    <div class="logo">
+        <img src="images/ag.jpg" alt="AG Logo">
+        <span class="logo-text">Azola Gatya</span>
+    </div>
+    <a href="index.html">Home</a>
+    <a href="about.html">About Me</a>
+    <a href="projects.html" class="active">Projects</a>
+    <a href="contacts.html">Contact</a>
+</nav>
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-header-inner">
+        <p class="section-label">My Work</p>
+        <h1>Projects</h1>
+        <p>A collection of academic, personal, and collaborative projects spanning web, mobile, and software development.</p>
+    </div>
+</div>
+
+<!-- Filter Bar -->
+<div class="filter-bar">
+    <button class="filter-btn active" onclick="filterProjects('all', this)">All</button>
+    <button class="filter-btn" onclick="filterProjects('web', this)">Web</button>
+    <button class="filter-btn" onclick="filterProjects('mobile', this)">Mobile</button>
+    <button class="filter-btn" onclick="filterProjects('academic', this)">Academic</button>
+</div>
+
+<!-- Projects Grid -->
+<div class="projects-grid" id="projectsGrid">
+
+    <div class="project-card" data-type="web academic">
+        <div class="project-card-top">
+            <span class="project-type-badge">Web · Academic</span>
+            <div class="project-icon">🌐</div>
+            <h3>Personal Portfolio Website</h3>
+        </div>
+        <div class="project-card-body">
+            <p>A multi-page responsive portfolio site built with pure HTML, CSS, and JavaScript. Showcases projects, skills, and contact information with a professional corporate design system.</p>
+            <div class="project-tech">
+                <span class="tech-tag">HTML5</span>
+                <span class="tech-tag">CSS3</span>
+                <span class="tech-tag">JavaScript</span>
+            </div>
+            <div class="project-links">
+                <a href="#" class="btn-outline-gold">View Project</a>
+                <a href="#" class="btn-outline-gold">GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="project-card" data-type="web academic">
+        <div class="project-card-top">
+            <span class="project-type-badge">Web · Academic</span>
+            <div class="project-icon">📚</div>
+            <h3>Student Management System</h3>
+        </div>
+        <div class="project-card-body">
+            <p>A full-stack web application to manage student records, course enrollment, and grades. Features user authentication, CRUD operations, and a clean dashboard interface.</p>
+            <div class="project-tech">
+                <span class="tech-tag">Java</span>
+                <span class="tech-tag">Spring Boot</span>
+                <span class="tech-tag">Thymeleaf</span>
+                <span class="tech-tag">MySQL</span>
+            </div>
+            <div class="project-links">
+                <a href="#" class="btn-outline-gold">View Project</a>
+                <a href="#" class="btn-outline-gold">GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="project-card" data-type="mobile academic">
+        <div class="project-card-top">
+            <span class="project-type-badge">Mobile · Academic</span>
+            <div class="project-icon">📱</div>
+            <h3>Task Manager App</h3>
+        </div>
+        <div class="project-card-body">
+            <p>An Android mobile application for personal task and productivity management. Users can create, categorise, set deadlines, and track completion of daily tasks with local data persistence.</p>
+            <div class="project-tech">
+                <span class="tech-tag">Android</span>
+                <span class="tech-tag">Java</span>
+                <span class="tech-tag">SQLite</span>
+                <span class="tech-tag">XML</span>
+            </div>
+            <div class="project-links">
+                <a href="#" class="btn-outline-gold">View Project</a>
+                <a href="#" class="btn-outline-gold">GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="project-card" data-type="web">
+        <div class="project-card-top">
+            <span class="project-type-badge">Web</span>
+            <div class="project-icon">🛒</div>
+            <h3>E-Commerce Front End</h3>
+        </div>
+        <div class="project-card-body">
+            <p>A responsive e-commerce product listing and cart UI. Includes product filtering, a dynamic cart with JavaScript, and a clean checkout flow — built as a front-end practice project.</p>
+            <div class="project-tech">
+                <span class="tech-tag">HTML5</span>
+                <span class="tech-tag">CSS3</span>
+                <span class="tech-tag">JavaScript</span>
+            </div>
+            <div class="project-links">
+                <a href="#" class="btn-outline-gold">View Project</a>
+                <a href="#" class="btn-outline-gold">GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="project-card" data-type="mobile">
+        <div class="project-card-top">
+            <span class="project-type-badge">Mobile</span>
+            <div class="project-icon">☁️</div>
+            <h3>Weather App</h3>
+        </div>
+        <div class="project-card-body">
+            <p>A mobile weather application that fetches real-time weather data via a public API and displays current conditions, a 5-day forecast, and location-based search for any city.</p>
+            <div class="project-tech">
+                <span class="tech-tag">Android</span>
+                <span class="tech-tag">Java</span>
+                <span class="tech-tag">REST API</span>
+                <span class="tech-tag">Retrofit</span>
+            </div>
+            <div class="project-links">
+                <a href="#" class="btn-outline-gold">View Project</a>
+                <a href="#" class="btn-outline-gold">GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="project-card" data-type="academic">
+        <div class="project-card-top">
+            <span class="project-type-badge">Academic</span>
+            <div class="project-icon">🐍</div>
+            <h3>Data Analysis with Python</h3>
+        </div>
+        <div class="project-card-body">
+            <p>An academic data analysis project using Python and Pandas to process and visualise a dataset. Includes statistical summaries, trend analysis, and chart generation with Matplotlib.</p>
+            <div class="project-tech">
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">Pandas</span>
+                <span class="tech-tag">Matplotlib</span>
+                <span class="tech-tag">Jupyter</span>
+            </div>
+            <div class="project-links">
+                <a href="#" class="btn-outline-gold">View Notebook</a>
+                <a href="#" class="btn-outline-gold">GitHub</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <p>&copy; 2025 <span>Azola Gatya</span>. All rights reserved.</p>
+</footer>
+
+<script>
+    function filterProjects(type, btn) {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        document.querySelectorAll('.project-card').forEach(card => {
+            if (type === 'all' || card.dataset.type.includes(type)) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+</script>
+
+<script src="js/main.js"></script>
+</body>
+</html>
