@@ -51,6 +51,9 @@ function initTyping() {
     if (!el) return;
 
     const phrases = [
+        'The One Piece... is clean code.',
+        'Hello, friend.',
+        '... a',
         'Junior Software Developer.',
         'Web & Mobile Builder.',
         'Clean Code Advocate.',
