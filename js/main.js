@@ -4,6 +4,14 @@
    project card tilt, active nav on scroll
    ============================================================ */
 
+/* ─── PAGE ORDER (cycle through these in sequence) ───────── */
+const PAGE_ORDER = [
+    'index.html',
+    'about.html',
+    'projects.html',
+    'contact.html',
+];
+
 /* ─── PAGE TRANSITION ─────────────────────────────────────── */
 // Overlay fades in on load, fades out on link clicks
 (function () {
@@ -51,14 +59,14 @@ function initTyping() {
     if (!el) return;
 
     const phrases = [
-    'The One Piece... is clean code.',
-    'Hello, friend.',
-    'You’ve been searching for something...',
-    'A Junior Software Developer.',
-    'A Web & Mobile Builder.',
-    'A Clean Code Advocate.',
-    'A Problem Solver.',
-];
+        'The One Piece... is clean code.',
+        'Hello, friend.',
+        'You've been searching for something...',
+        'A Junior Software Developer.',
+        'A Web & Mobile Builder.',
+        'A Clean Code Advocate.',
+        'A Problem Solver.',
+    ];
 
     let phraseIndex = 0;
     let charIndex = 0;
@@ -245,6 +253,128 @@ function initSkillRipple() {
 }
 
 
+/* ─── SCROLL-TO-BOTTOM AUTO PAGE CYCLE ────────────────────── */
+function initScrollPageCycle() {
+    // Work out which page we're on right now
+    const currentFile = window.location.pathname.split('/').pop() || 'index.html';
+    const currentIndex = PAGE_ORDER.findIndex(
+        (p) => p === currentFile || currentFile === '' && p === 'index.html'
+    );
+
+    // If this page isn't in the list, do nothing
+    if (currentIndex === -1) return;
+
+    const nextPage = PAGE_ORDER[(currentIndex + 1) % PAGE_ORDER.length];
+
+    // Build the toast indicator
+    const toast = document.createElement('div');
+    toast.id = 'scroll-page-toast';
+    toast.innerHTML = `
+        <span class="scroll-page-toast-text">Taking you to <strong>${nextPage.replace('.html', '')}</strong>…</span>
+        <div class="scroll-page-toast-bar"></div>
+    `;
+    document.body.appendChild(toast);
+
+    // Inject minimal styles (keeps everything self-contained)
+    const style = document.createElement('style');
+    style.textContent = `
+        #scroll-page-toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(120%);
+            background: var(--color-surface, #1e1e2e);
+            color: var(--color-text, #cdd6f4);
+            border: 1px solid var(--color-border, #313244);
+            padding: 0.75rem 1.5rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+            transition: transform 0.4s cubic-bezier(.34,1.56,.64,1);
+            z-index: 9999;
+            text-align: center;
+            min-width: 220px;
+        }
+        #scroll-page-toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+        .scroll-page-toast-bar {
+            height: 3px;
+            background: var(--color-accent, #cba6f7);
+            border-radius: 999px;
+            margin-top: 0.5rem;
+            width: 0%;
+            transition: width linear;
+        }
+    `;
+    document.head.appendChild(style);
+
+    let triggered = false;
+    const HOLD_MS = 1200; // how long to hold at bottom before navigating
+    let fillTimer = null;
+    let navTimer  = null;
+
+    function getScrollBottom() {
+        return window.scrollY + window.innerHeight;
+    }
+
+    function isAtBottom() {
+        // Allow a 4px tolerance for sub-pixel rounding
+        return getScrollBottom() >= document.documentElement.scrollHeight - 4;
+    }
+
+    function showToast() {
+        toast.classList.add('show');
+        const bar = toast.querySelector('.scroll-page-toast-bar');
+        // Trigger the CSS fill transition
+        requestAnimationFrame(() => {
+            bar.style.transition = `width ${HOLD_MS}ms linear`;
+            bar.style.width = '100%';
+        });
+    }
+
+    function hideToast() {
+        toast.classList.remove('show');
+        const bar = toast.querySelector('.scroll-page-toast-bar');
+        bar.style.transition = 'none';
+        bar.style.width = '0%';
+    }
+
+    function navigate() {
+        triggered = true;
+        const overlay = document.getElementById('page-overlay');
+        if (overlay) {
+            overlay.classList.remove('fade-out');
+            overlay.classList.add('fade-in');
+        }
+        setTimeout(() => {
+            window.location.href = nextPage;
+        }, 380);
+    }
+
+    window.addEventListener('scroll', () => {
+        if (triggered) return;
+
+        if (isAtBottom()) {
+            if (fillTimer) return; // already counting
+            showToast();
+            fillTimer = setTimeout(() => {
+                navigate();
+            }, HOLD_MS);
+            navTimer = fillTimer;
+        } else {
+            // User scrolled back up — cancel
+            if (fillTimer) {
+                clearTimeout(fillTimer);
+                fillTimer = null;
+                navTimer  = null;
+                hideToast();
+            }
+        }
+    }, { passive: true });
+}
+
+
 /* ─── BOOT ────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
     initTyping();
@@ -254,4 +384,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initNavShrink();
     initCursorDot();
     initSkillRipple();
+    initScrollPageCycle();
 });
