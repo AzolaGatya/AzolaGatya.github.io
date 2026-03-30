@@ -9,24 +9,21 @@ const PAGE_ORDER = [
     'index.html',
     'about.html',
     'projects.html',
-    'contact.html',
+    'contacts.html',
 ];
 
 /* ─── PAGE TRANSITION ─────────────────────────────────────── */
-// Overlay fades in on load, fades out on link clicks
 (function () {
     const overlay = document.createElement('div');
     overlay.id = 'page-overlay';
     document.body.appendChild(overlay);
 
-    // Fade out overlay when page is ready
     window.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(() => {
             overlay.classList.add('fade-out');
         });
     });
 
-    // Intercept internal nav links
     document.addEventListener('click', (e) => {
         const link = e.target.closest('a[href]');
         if (!link) return;
@@ -61,7 +58,7 @@ function initTyping() {
     const phrases = [
         'The One Piece... is clean code.',
         'Hello, friend.',
-        'You've been searching for something...',
+        'You\u2019ve been searching for something...',
         'A Junior Software Developer.',
         'A Web & Mobile Builder.',
         'A Clean Code Advocate.',
@@ -71,7 +68,6 @@ function initTyping() {
     let phraseIndex = 0;
     let charIndex = 0;
     let deleting = false;
-    let paused = false;
 
     function tick() {
         const current = phrases[phraseIndex];
@@ -79,8 +75,7 @@ function initTyping() {
         if (!deleting) {
             el.textContent = current.slice(0, ++charIndex);
             if (charIndex === current.length) {
-                paused = true;
-                setTimeout(() => { paused = false; deleting = true; tick(); }, 1800);
+                setTimeout(() => { deleting = true; tick(); }, 1800);
                 return;
             }
         } else {
@@ -91,11 +86,9 @@ function initTyping() {
             }
         }
 
-        const speed = deleting ? 45 : 90;
-        setTimeout(tick, speed);
+        setTimeout(tick, deleting ? 45 : 90);
     }
 
-    // Small delay before starting so page load feels settled
     setTimeout(tick, 800);
 }
 
@@ -105,19 +98,15 @@ function initScrollReveal() {
     const targets = document.querySelectorAll(
         '.project-card, .skill-category, .education-item, .contact-item, .about-bio, .about-sidebar, .hero-card'
     );
-
     if (!targets.length) return;
 
     const observer = new IntersectionObserver(
         (entries) => {
-            entries.forEach((entry, i) => {
+            entries.forEach((entry) => {
                 if (entry.isIntersecting) {
-                    // Stagger siblings that appear together
                     const siblings = [...entry.target.parentElement.children];
                     const delay = siblings.indexOf(entry.target) * 80;
-                    setTimeout(() => {
-                        entry.target.classList.add('revealed');
-                    }, delay);
+                    setTimeout(() => entry.target.classList.add('revealed'), delay);
                     observer.unobserve(entry.target);
                 }
             });
@@ -148,7 +137,6 @@ function initCardTilt() {
             const rotateY = ((x - cx) / cx) * 6;
             card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px)`;
         });
-
         card.addEventListener('mouseleave', () => {
             card.style.transform = '';
         });
@@ -189,18 +177,13 @@ function initNavShrink() {
     if (!nav) return;
 
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 60) {
-            nav.classList.add('nav-scrolled');
-        } else {
-            nav.classList.remove('nav-scrolled');
-        }
+        nav.classList.toggle('nav-scrolled', window.scrollY > 60);
     }, { passive: true });
 }
 
 
-/* ─── CURSOR DOT (subtle, professional-fun) ──────────────── */
+/* ─── CURSOR DOT ──────────────────────────────────────────── */
 function initCursorDot() {
-    // Only on desktop
     if (window.matchMedia('(hover: none)').matches) return;
 
     const dot = document.createElement('div');
@@ -220,7 +203,6 @@ function initCursorDot() {
         dot.style.top  = my + 'px';
     });
 
-    // Ring lazily follows
     (function animateRing() {
         rx += (mx - rx) * 0.14;
         ry += (my - ry) * 0.14;
@@ -229,7 +211,6 @@ function initCursorDot() {
         requestAnimationFrame(animateRing);
     })();
 
-    // Expand ring over interactive elements
     document.querySelectorAll('a, button, .project-card, .filter-btn, input, textarea, select').forEach((el) => {
         el.addEventListener('mouseenter', () => ring.classList.add('ring-expand'));
         el.addEventListener('mouseleave', () => ring.classList.remove('ring-expand'));
@@ -255,89 +236,84 @@ function initSkillRipple() {
 
 /* ─── SCROLL-TO-BOTTOM AUTO PAGE CYCLE ────────────────────── */
 function initScrollPageCycle() {
-    // Work out which page we're on right now
-    const currentFile = window.location.pathname.split('/').pop() || 'index.html';
-    const currentIndex = PAGE_ORDER.findIndex(
-        (p) => p === currentFile || currentFile === '' && p === 'index.html'
-    );
-
-    // If this page isn't in the list, do nothing
+    // Determine current page filename
+    const currentFile  = window.location.pathname.split('/').pop() || 'index.html';
+    const normalised   = currentFile === '' ? 'index.html' : currentFile;
+    const currentIndex = PAGE_ORDER.indexOf(normalised);
     if (currentIndex === -1) return;
 
-    const nextPage = PAGE_ORDER[(currentIndex + 1) % PAGE_ORDER.length];
+    const nextPage  = PAGE_ORDER[(currentIndex + 1) % PAGE_ORDER.length];
+    const nextLabel = nextPage.replace('.html', '');
+    const HOLD_MS   = 1200;
 
-    // Build the toast indicator
-    const toast = document.createElement('div');
-    toast.id = 'scroll-page-toast';
-    toast.innerHTML = `
-        <span class="scroll-page-toast-text">Taking you to <strong>${nextPage.replace('.html', '')}</strong>…</span>
-        <div class="scroll-page-toast-bar"></div>
-    `;
-    document.body.appendChild(toast);
-
-    // Inject minimal styles (keeps everything self-contained)
+    /* ── Inject toast styles ── */
     const style = document.createElement('style');
     style.textContent = `
         #scroll-page-toast {
             position: fixed;
             bottom: 2rem;
             left: 50%;
-            transform: translateX(-50%) translateY(120%);
+            transform: translateX(-50%) translateY(140%);
             background: var(--color-surface, #1e1e2e);
             color: var(--color-text, #cdd6f4);
             border: 1px solid var(--color-border, #313244);
-            padding: 0.75rem 1.5rem 0.5rem;
+            padding: 0.75rem 1.5rem 0.6rem;
             border-radius: 999px;
             font-size: 0.85rem;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
             transition: transform 0.4s cubic-bezier(.34,1.56,.64,1);
-            z-index: 9999;
+            z-index: 99999;
             text-align: center;
-            min-width: 220px;
+            min-width: 240px;
+            pointer-events: none;
         }
         #scroll-page-toast.show {
             transform: translateX(-50%) translateY(0);
         }
-        .scroll-page-toast-bar {
+        #spt-bar {
             height: 3px;
             background: var(--color-accent, #cba6f7);
             border-radius: 999px;
             margin-top: 0.5rem;
             width: 0%;
-            transition: width linear;
+            transition: none;
+        }
+        #spt-bar.filling {
+            width: 100%;
+            transition: width ${HOLD_MS}ms linear;
         }
     `;
     document.head.appendChild(style);
 
-    let triggered = false;
-    const HOLD_MS = 1200; // how long to hold at bottom before navigating
-    let fillTimer = null;
-    let navTimer  = null;
+    const toast = document.createElement('div');
+    toast.id = 'scroll-page-toast';
+    toast.innerHTML = `Going to <strong>${nextLabel}</strong>&hellip;<div id="spt-bar"></div>`;
+    document.body.appendChild(toast);
 
-    function getScrollBottom() {
-        return window.scrollY + window.innerHeight;
-    }
+    const bar = document.getElementById('spt-bar');
+
+    let fillTimer = null;
+    let triggered = false;
 
     function isAtBottom() {
-        // Allow a 4px tolerance for sub-pixel rounding
-        return getScrollBottom() >= document.documentElement.scrollHeight - 4;
+        const docHeight = document.documentElement.scrollHeight;
+        const viewHeight = window.innerHeight;
+        // If the page has no scrollable area, skip
+        if (docHeight <= viewHeight + 4) return false;
+        return window.scrollY + viewHeight >= docHeight - 6;
     }
 
     function showToast() {
         toast.classList.add('show');
-        const bar = toast.querySelector('.scroll-page-toast-bar');
-        // Trigger the CSS fill transition
-        requestAnimationFrame(() => {
-            bar.style.transition = `width ${HOLD_MS}ms linear`;
-            bar.style.width = '100%';
-        });
+        bar.classList.remove('filling');
+        void bar.offsetWidth; // force reflow to reset width
+        bar.classList.add('filling');
     }
 
     function hideToast() {
         toast.classList.remove('show');
-        const bar = toast.querySelector('.scroll-page-toast-bar');
-        bar.style.transition = 'none';
-        bar.style.width = '0%';
+        bar.classList.remove('filling');
+        void bar.offsetWidth;
     }
 
     function navigate() {
@@ -347,27 +323,20 @@ function initScrollPageCycle() {
             overlay.classList.remove('fade-out');
             overlay.classList.add('fade-in');
         }
-        setTimeout(() => {
-            window.location.href = nextPage;
-        }, 380);
+        setTimeout(() => { window.location.href = nextPage; }, 380);
     }
 
     window.addEventListener('scroll', () => {
         if (triggered) return;
 
         if (isAtBottom()) {
-            if (fillTimer) return; // already counting
+            if (fillTimer) return; // already counting down
             showToast();
-            fillTimer = setTimeout(() => {
-                navigate();
-            }, HOLD_MS);
-            navTimer = fillTimer;
+            fillTimer = setTimeout(navigate, HOLD_MS);
         } else {
-            // User scrolled back up — cancel
             if (fillTimer) {
                 clearTimeout(fillTimer);
                 fillTimer = null;
-                navTimer  = null;
                 hideToast();
             }
         }
