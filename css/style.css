@@ -442,125 +442,11 @@ nav a.active {
 .page-header h1 { color: var(--white); }
 .page-header p { color: rgba(255,255,255,0.6); margin-top: 0.75rem; max-width: 560px; }
 
-.filter-bar {
+.projects-empty {
     max-width: 1100px;
-    margin: 2.5rem auto 0;
-    padding: 0 4vw;
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-}
-
-.filter-btn {
-    padding: 0.45rem 1.1rem;
-    background: transparent;
-    border: 1.5px solid var(--border);
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-family: var(--font-body);
-    font-weight: 500;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all var(--transition);
-}
-.filter-btn:hover,
-.filter-btn.active {
-    background: var(--navy);
-    border-color: var(--navy);
-    color: var(--white);
-}
-
-.projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 1.75rem;
-    max-width: 1100px;
-    margin: 2.5rem auto 0;
-    padding: 0 4vw 5rem;
-}
-
-.project-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    transition: transform var(--transition), box-shadow var(--transition);
-    display: flex;
-    flex-direction: column;
-}
-.project-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
-
-.project-card-top {
-    background: var(--navy-mid);
-    padding: 1.75rem;
-    position: relative;
-}
-
-.project-icon {
-    width: 48px;
-    height: 48px;
-    background: var(--gold);
-    border-radius: var(--radius);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    margin-bottom: 1rem;
-}
-
-.project-type-badge {
-    position: absolute;
-    top: 1.25rem;
-    right: 1.25rem;
-    font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--gold);
-    border: 1px solid var(--gold);
-    padding: 0.2rem 0.6rem;
-    border-radius: 20px;
-}
-
-.project-card-top h3 {
-    color: var(--white);
-    font-size: 1.1rem;
-}
-
-.project-card-body {
-    padding: 1.5rem;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.project-card-body p {
-    font-size: 0.9rem;
-    line-height: 1.7;
-    margin-bottom: 1.25rem;
-    flex: 1;
-}
-
-.project-tech {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    margin-bottom: 1.25rem;
-}
-
-.tech-tag {
-    background: var(--off-white);
-    color: var(--navy);
-    font-size: 0.72rem;
-    font-weight: 500;
-    padding: 0.2rem 0.6rem;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-}
-
-.project-links {
-    display: flex;
-    gap: 0.75rem;
+    margin: 0 auto;
+    padding: 3rem 4vw 5rem;
+    text-align: center;
 }
 
 /* ─── CONTACT PAGE ────────────────────────────────────────── */
@@ -723,6 +609,13 @@ footer span { color: var(--gold); }
     nav a { font-size: 0.78rem; }
 }
 
+@media (max-width: 480px) {
+    nav { gap: 0.6rem; padding: 0 2vw; }
+    nav a { font-size: 0.64rem; letter-spacing: 0.04em; }
+    .logo { gap: 0; }
+    .logo-text { display: none; }
+}
+
 
 /* ─── JS INTERACTION STYLES ───────────────────────────────── */
 
@@ -755,11 +648,6 @@ nav.nav-scrolled {
 .revealed {
     opacity: 1;
     transform: translateY(0);
-}
-
-/* Card tilt transition when not hovering */
-.project-card {
-    transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 /* Typing cursor */
@@ -804,25 +692,19 @@ nav.nav-scrolled {
     opacity: 0.35;
 }
 
-/* Skill tag ripple */
-.skill-tag { position: relative; overflow: hidden; cursor: pointer; }
-.ripple {
-    position: absolute;
-    transform: translate(-50%, -50%) scale(0);
-    width: 80px;
-    height: 80px;
-    background: rgba(200, 155, 60, 0.3);
-    border-radius: 50%;
-    animation: rippleAnim 0.6s ease-out forwards;
-    pointer-events: none;
-}
-@keyframes rippleAnim {
-    to { transform: translate(-50%, -50%) scale(1); opacity: 0; }
-}
-
 /* ─── CONTACT ICONS ───────────────────────────────────────── */
 .contact-icon img {
     width: 24px;
     height: 24px;
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%); /* Makes icons white */
+}
+
+.form-submit:disabled {
+    cursor: wait;
+    opacity: 0.7;
+}
+
+.form-status {
+    margin-top: 1rem;
+    font-size: 0.9rem;
 }

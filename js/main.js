@@ -1,7 +1,7 @@
 /* ============================================================
    AZOLA GATYA — main.js
    Interactions: page transitions, typing hero, scroll-reveal,
-   project card tilt, active nav on scroll
+   active nav on scroll, and contact form submission
    ============================================================ */
 
 /* ─── PAGE ORDER (cycle through these in sequence) ───────── */
@@ -25,25 +25,34 @@ const PAGE_ORDER = [
     });
 
     document.addEventListener('click', (e) => {
+        if (
+            e.defaultPrevented ||
+            e.button !== 0 ||
+            e.metaKey ||
+            e.ctrlKey ||
+            e.shiftKey ||
+            e.altKey
+        ) return;
+
         const link = e.target.closest('a[href]');
         if (!link) return;
 
-        const href = link.getAttribute('href');
+        const destination = new URL(link.href, window.location.href);
         const isInternal =
-            href &&
-            !href.startsWith('http') &&
-            !href.startsWith('mailto') &&
-            !href.startsWith('tel') &&
-            !href.startsWith('#') &&
+            destination.origin === window.location.origin &&
+            (destination.protocol === 'http:' || destination.protocol === 'https:') &&
             !link.hasAttribute('download') &&
-            !link.target;
+            !link.hasAttribute('target') &&
+            !(destination.pathname === window.location.pathname &&
+                destination.search === window.location.search &&
+                destination.hash);
 
         if (isInternal) {
             e.preventDefault();
             overlay.classList.remove('fade-out');
             overlay.classList.add('fade-in');
             setTimeout(() => {
-                window.location.href = href;
+                window.location.href = destination.href;
             }, 380);
         }
     });
@@ -96,7 +105,7 @@ function initTyping() {
 /* ─── SCROLL-REVEAL ───────────────────────────────────────── */
 function initScrollReveal() {
     const targets = document.querySelectorAll(
-        '.project-card, .skill-category, .education-item, .contact-item, .about-bio, .about-sidebar, .hero-card'
+        '.skill-category, .education-item, .contact-item, .about-bio, .about-sidebar, .hero-card'
     );
     if (!targets.length) return;
 
@@ -117,29 +126,6 @@ function initScrollReveal() {
     targets.forEach((el) => {
         el.classList.add('reveal-hidden');
         observer.observe(el);
-    });
-}
-
-
-/* ─── PROJECT CARD 3-D TILT ───────────────────────────────── */
-function initCardTilt() {
-    const cards = document.querySelectorAll('.project-card');
-    if (!cards.length) return;
-
-    cards.forEach((card) => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const cx = rect.width / 2;
-            const cy = rect.height / 2;
-            const rotateX = ((y - cy) / cy) * -6;
-            const rotateY = ((x - cx) / cx) * 6;
-            card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px)`;
-        });
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = '';
-        });
     });
 }
 
@@ -211,25 +197,44 @@ function initCursorDot() {
         requestAnimationFrame(animateRing);
     })();
 
-    document.querySelectorAll('a, button, .project-card, .filter-btn, input, textarea, select').forEach((el) => {
+    document.querySelectorAll('a, button, input, textarea, select').forEach((el) => {
         el.addEventListener('mouseenter', () => ring.classList.add('ring-expand'));
         el.addEventListener('mouseleave', () => ring.classList.remove('ring-expand'));
     });
 }
 
 
-/* ─── SKILL TAG RIPPLE ────────────────────────────────────── */
-function initSkillRipple() {
-    document.querySelectorAll('.skill-tag').forEach((tag) => {
-        tag.addEventListener('click', function (e) {
-            const ripple = document.createElement('span');
-            ripple.className = 'ripple';
-            const rect = this.getBoundingClientRect();
-            ripple.style.left = (e.clientX - rect.left) + 'px';
-            ripple.style.top  = (e.clientY - rect.top)  + 'px';
-            this.appendChild(ripple);
-            setTimeout(() => ripple.remove(), 600);
-        });
+/* ─── CONTACT FORM ────────────────────────────────────────── */
+function initContactForm() {
+    const form = document.getElementById('contactForm');
+    const status = document.getElementById('formStatus');
+    const submitButton = form?.querySelector('button[type="submit"]');
+    if (!form || !status || !submitButton) return;
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        status.textContent = 'Sending your message...';
+        submitButton.disabled = true;
+
+        try {
+            const response = await fetch(form.action, {
+                method: form.method,
+                body: new FormData(form),
+                headers: { Accept: 'application/json' },
+            });
+
+            if (!response.ok) {
+                status.textContent = 'Your message could not be sent. Please try again later.';
+                return;
+            }
+
+            form.reset();
+            status.textContent = "Message sent! I'll be in touch soon.";
+        } catch {
+            status.textContent = 'A network error prevented your message from sending. Please try again.';
+        } finally {
+            submitButton.disabled = false;
+        }
     });
 }
 
@@ -348,10 +353,9 @@ function initScrollPageCycle() {
 document.addEventListener('DOMContentLoaded', () => {
     initTyping();
     initScrollReveal();
-    initCardTilt();
     initActiveNav();
     initNavShrink();
     initCursorDot();
-    initSkillRipple();
+    initContactForm();
     initScrollPageCycle();
 });
