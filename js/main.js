@@ -55,15 +55,18 @@ function initTyping() {
     const el = document.getElementById('typing-target');
     if (!el) return;
 
-    const phrases = [
-        'The next adventure starts with clean code.',
-        'Hello, friend.',
-        'You\u2019ve been searching for something...',
-        'A Software Engineer.',
-        'Java, clean code, and thoughtful solutions.',
-        'A Clean Code Advocate.',
-        'A Problem Solver.',
-    ];
+   const phrases = [
+    'It works on my machine.',
+    'I didn\'t change anything.',
+    'It was working yesterday.',
+    'It\'s not a bug, it\'s a feature.',
+    'I don\'t know why it works. Don\'t touch it.',
+    'The code compiles. Ship it.',
+    'I swear I fixed that 100x bug.',
+    'I\'ll write the tests later...',
+    'Why is this endpoint returning 500?',
+    'Wait, what does this legacy code even do?'
+];
 
     let phraseIndex = 0;
     let charIndex = 0;
