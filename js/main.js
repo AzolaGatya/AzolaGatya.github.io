@@ -1,16 +1,7 @@
 /* ============================================================
-   AZOLA GATYA — main.js
    Interactions: page transitions, typing hero, scroll-reveal,
    active nav on scroll, and contact form submission
    ============================================================ */
-
-/* ─── PAGE ORDER (cycle through these in sequence) ───────── */
-const PAGE_ORDER = [
-    'index.html',
-    'about.html',
-    'projects.html',
-    'contacts.html',
-];
 
 /* ─── PAGE TRANSITION ─────────────────────────────────────── */
 (function () {
@@ -65,11 +56,11 @@ function initTyping() {
     if (!el) return;
 
     const phrases = [
-        'The One Piece... is clean code.',
+        'The next adventure starts with clean code.',
         'Hello, friend.',
         'You\u2019ve been searching for something...',
-        'A Junior Software Developer.',
-        'A Web & Mobile Builder.',
+        'A Software Engineer.',
+        'Java, clean code, and thoughtful solutions.',
         'A Clean Code Advocate.',
         'A Problem Solver.',
     ];
@@ -239,116 +230,6 @@ function initContactForm() {
 }
 
 
-/* ─── SCROLL-TO-BOTTOM AUTO PAGE CYCLE ────────────────────── */
-function initScrollPageCycle() {
-    // Determine current page filename
-    const currentFile  = window.location.pathname.split('/').pop() || 'index.html';
-    const normalised   = currentFile === '' ? 'index.html' : currentFile;
-    const currentIndex = PAGE_ORDER.indexOf(normalised);
-    if (currentIndex === -1) return;
-
-    const nextPage  = PAGE_ORDER[(currentIndex + 1) % PAGE_ORDER.length];
-    const nextLabel = nextPage.replace('.html', '');
-    const HOLD_MS   = 1200;
-
-    /* ── Inject toast styles ── */
-    const style = document.createElement('style');
-    style.textContent = `
-        #scroll-page-toast {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%) translateY(140%);
-            background: var(--color-surface, #1e1e2e);
-            color: var(--color-text, #cdd6f4);
-            border: 1px solid var(--color-border, #313244);
-            padding: 0.75rem 1.5rem 0.6rem;
-            border-radius: 999px;
-            font-size: 0.85rem;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-            transition: transform 0.4s cubic-bezier(.34,1.56,.64,1);
-            z-index: 99999;
-            text-align: center;
-            min-width: 240px;
-            pointer-events: none;
-        }
-        #scroll-page-toast.show {
-            transform: translateX(-50%) translateY(0);
-        }
-        #spt-bar {
-            height: 3px;
-            background: var(--color-accent, #cba6f7);
-            border-radius: 999px;
-            margin-top: 0.5rem;
-            width: 0%;
-            transition: none;
-        }
-        #spt-bar.filling {
-            width: 100%;
-            transition: width ${HOLD_MS}ms linear;
-        }
-    `;
-    document.head.appendChild(style);
-
-    const toast = document.createElement('div');
-    toast.id = 'scroll-page-toast';
-    toast.innerHTML = `Going to <strong>${nextLabel}</strong>&hellip;<div id="spt-bar"></div>`;
-    document.body.appendChild(toast);
-
-    const bar = document.getElementById('spt-bar');
-
-    let fillTimer = null;
-    let triggered = false;
-
-    function isAtBottom() {
-        const docHeight = document.documentElement.scrollHeight;
-        const viewHeight = window.innerHeight;
-        // If the page has no scrollable area, skip
-        if (docHeight <= viewHeight + 4) return false;
-        return window.scrollY + viewHeight >= docHeight - 6;
-    }
-
-    function showToast() {
-        toast.classList.add('show');
-        bar.classList.remove('filling');
-        void bar.offsetWidth; // force reflow to reset width
-        bar.classList.add('filling');
-    }
-
-    function hideToast() {
-        toast.classList.remove('show');
-        bar.classList.remove('filling');
-        void bar.offsetWidth;
-    }
-
-    function navigate() {
-        triggered = true;
-        const overlay = document.getElementById('page-overlay');
-        if (overlay) {
-            overlay.classList.remove('fade-out');
-            overlay.classList.add('fade-in');
-        }
-        setTimeout(() => { window.location.href = nextPage; }, 380);
-    }
-
-    window.addEventListener('scroll', () => {
-        if (triggered) return;
-
-        if (isAtBottom()) {
-            if (fillTimer) return; // already counting down
-            showToast();
-            fillTimer = setTimeout(navigate, HOLD_MS);
-        } else {
-            if (fillTimer) {
-                clearTimeout(fillTimer);
-                fillTimer = null;
-                hideToast();
-            }
-        }
-    }, { passive: true });
-}
-
-
 /* ─── BOOT ────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
     initTyping();
@@ -357,5 +238,4 @@ document.addEventListener('DOMContentLoaded', () => {
     initNavShrink();
     initCursorDot();
     initContactForm();
-    initScrollPageCycle();
 });
